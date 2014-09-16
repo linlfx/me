@@ -1,0 +1,71 @@
+git config --global user.name "Leo.Lin"
+git config --global user.email leo@unispace3d.com
+
+git log --pretty=online
+git log --graph --oneline
+git reflog
+
+git status -s
+
+git diff		// 工作区与暂存区比较
+git diff HEAD		// 工作区与版本库比较
+git diff --cached	// 暂存区与版本库比较
+git diff 4257ed8 41c2a8b a.xml	// 两个版本之间比较，后一个为较新的
+
+git ls-tree -l HEAD	// 显示版本库的目录树
+git ls-files -s		// 显示暂存区的目录树
+
+git add welcome.txt
+git add -u		// 将所有修改和删除记录到暂存区
+git add .		// 将所有改动（增删改）记录到暂存区, .可换成-A
+git add -i		// 交互界面
+git commit -m "commit"
+
+git reset			// 用版本库重置暂存区，工作区不影响
+git reset -- welcome.txt	// 同上，只影响一个文件
+git reset --soft HEAD^		// 版本库回去，暂存区、工作区无影响
+git reset HEAD^	 		// 版本库、暂存区回去，工作区无影响
+git reset --hard HEAD^		// 版本库、暂存区、工作区都回到上次提交
+
+git checkout master
+git checkout -- welcome.txt		// 用暂存区文件覆盖工作区文件
+git checkout branch -- welcome.txt	// 用branch分支的文件覆盖工作区和暂存区文件
+git checkout .	       			// 用所有暂存区文件覆盖工作区文件
+
+git stash		// 保存工作进度
+git stash list
+git stash pop
+
+git init --bare		// 初始化版本库
+
+git clone demo demo-step-1
+git clone file:///home/leo/git/test.git project
+
+git remote add origin ssh://root@u3dsh1.asuscomm.com:22/opt/java/gprsService.git
+git push origin master	// 首次提交
+git push 		// 以后可省略
+git push -f		// 强制推送，当前版本覆盖服务器版本，通常是提交后发现错误，马上修改后使用修补提交后强制推送到服务端　git commit --amend -m "user2's profile."
+
+// 没有通过clone取得的库在需要pull时，要用下面2条语句增加配置
+git config --global branch.master.remote origin
+git config --global branch.master.merge refs/heads/master
+
+git pull
+git pull = git fetch + git merge
+
+git show :1:README     // 暂存区中冲突文件修改前的副本
+git show :2:README     // 当前冲突文件和当前分支中的副本
+git show :3:README     // 当前冲突文件在远端分支中的副本
+当前工作区的文件中包含了冲突的所有内容，以<<<<<<<<<===========>>>>>>>>>标识
+手动编辑解决冲突，提交描述可写Merge相关，就可以推送了
+git mergetool
+
+git tag -m "This is a tag." v1
+git tag -n1
+git push origin mytag	// 显示推送里程碑，pull能默认取得里程碑
+git checkout v1
+
+git branch
+git branch branch1
+
+echo test.o >> .gitignore
