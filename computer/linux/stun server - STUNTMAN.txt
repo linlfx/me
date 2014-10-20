@@ -1,0 +1,17 @@
+http://www.stunprotocol.org/
+
+安装：
+sudo apt-get install libboost-dev libssl-dev -y
+
+wget http://www.stunprotocol.org/stunserver-1.2.7.tgz
+tar -zxvf stunserver-1.2.7.tgz
+cd stunserver
+make
+
+运行：
+./stunserver --mode full --primaryinterface 192.168.18.11 --altinterface 192.168.18.12 --primaryport 3478 --altport 3479 --family 4 --protocol udp --verbosity 3 
+
+./stunclient --mode full --localaddr 192.168.18.147 --localport 4321 --family 4 --protocol udp --verbosity 3 192.168.18.11 3478
+
+Server在NAT后（如AWS）：
+./stunserver --mode full --primaryinterface eth0 --altinterface eth1 --primaryport 3478 --altport 3479 --family 4 --protocol udp --verbosity 3 --primaryadvertised 54.64.200.30 --altadvertised 54.64.206.32
