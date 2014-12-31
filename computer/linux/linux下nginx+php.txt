@@ -1,0 +1,36 @@
+sudo yum install -y nginx php-fpm
+
+sudo vi /etc/php-fpm.d/www.conf
+----------------------
+user = nginx
+group = nginx
+----------------------
+sudo php-fpm -c /etc/php.ini -y /etc/php-fpm.conf
+
+sudo vi /etc/nginx/nginx.conf
+----------------------
+# 放开php的注释并稍做调整
+location ~ \.php$ {
+    root           html;
+    fastcgi_pass   127.0.0.1:9000;
+    fastcgi_index  index.php;
+    fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+    include        fastcgi_params;
+}
+----------------------
+sudo nginx
+
+sudo vi /usr/share/nginx/html/test.php
+----------------------
+<?php
+  echo time();
+?>
+----------------------
+
+访问 http://IP:PORT/test.php 可以看到一个数字，就成功了。
+
+==================================================================
+# 关闭
+sudo kill -INT `cat /var/run/php-fpm/php-fpm.pid`
+# 重启
+sudo kill -USR2 `cat /var/run/php-fpm/php-fpm.pid`
