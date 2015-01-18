@@ -1,0 +1,130 @@
+---
+layout: post
+title: "Ext GWT 2.0 开发入门"
+date: 2010-01-09 00:54
+categories: "开发框架"
+---
+
+一、准备：
+--------------------------------
+
+1. 下载Ext GWT 2.1.0。
+2. 下载GWT 1.7.1，Ext GWT 2.1.0需GWT 1.6以上版本。直接解压缩即可。
+3. 下载GWT插件，cypal.studio.for.gwt- 1.0。复制到eclipse的plugins目录下。
+
+二、配置GWT：
+-------------------------------
+
+打开eclipse，Window->Preference->Cypal Studio，将GWT Home选择为GWT 1.7.1解压后目录。
+ 
+三、创建GWT项目
+------------------------------
+
+新建Dynamic Web Project，如下图，点击finish。
+
+![]({{ "/images/ext-gwt-2/1.jpg" | prepend: site.baseurl }})
+
+新建GWT Module：
+
+![]({{ "/images/ext-gwt-2/2.jpg" | prepend: site.baseurl }})
+
+New->Other中选择GWT Module，Next。 
+
+![]({{ "/images/ext-gwt-2/3.jpg" | prepend: site.baseurl }})
+
+输入包和类名，Finish。 GWT Module 必须实现 com.google.gwt.core .client.EntryPoint 接口。 
+
+现在项目结构如下：
+
+![]({{ "/images/ext-gwt-2/4.jpg" | prepend: site.baseurl }})
+
+在 public 这个目录下放置图片，JavaScript 脚本，CSS 样式表和每个 GWT module 对应的 html 文件。
+
+HelloWorld.gwt.xml中声明GWT 的配置信息，包括 Module 的信息、CSS 样式表的相对路径等。
+
+在 GWT 的应用规范中，显示层的 Java 代码必须放在以包名 client 结尾的目录或者子目录下，并且不能依赖其它非 client 目录下的 Java 代码。
+
+对其它的服务器端的代码，要放到以 server 结尾的包或者子包当中。
+
+编辑HelloWorld的onModuleLoad方法：
+
+    package com.xy.demo.client;
+
+    import com.google.gwt.core.client.EntryPoint;
+    import com.google.gwt.user.client.Window;
+
+    public class HelloWorld implements EntryPoint {
+
+        public void onModuleLoad() {
+            Window.alert("Hello World!");
+        }
+    }
+
+配置运行环境：
+
+![]({{ "/images/ext-gwt-2/5.jpg" | prepend: site.baseurl }})
+
+Run->Run Configurations->Gwt Hosted Mode Application，右键New，修改Name，选择Project和Module。
+
+运行，弹出alert框Hello World!，成功！
+ 
+四、加入Ext GWT
+---------------------------
+
+复制gxt-2.1.0\gxt.jar到项目WebContent\WEB-INF\lib目录下，项目 Properties->Java Build Path->Libraries->Add JARs...加入gxt.jar。
+
+复制gxt-2.1.0\resources及其下所有子目录和文件到src\com.xy.demo.public目录下。
+
+修改HelloWorld.gwt.xml
+
+    <module>
+
+        <!-- Inherit the core Web Toolkit stuff.                  -->
+        <inherits name='com.google.gwt.user.User'/>
+        <inherits name='com.extjs.gxt.ui.GXT'/>
+
+        <!-- Specify the app entry point class.                   -->
+        <entry-point class='com.xy.demo.client.HelloWorld'/>
+      
+          <inherits name="com.google.gwt.user.theme.standard.Standard"/>
+          <!-- <inherits name="com.google.gwt.user.theme.chrome.Chrome"/> -->
+          <!-- <inherits name="com.google.gwt.user.theme.dark.Dark"/> -->
+          
+          <stylesheet src="resources/css/gxt-all.css"/> 
+    </module>
+
+修改HelloWorld.java
+
+    package com.xy.demo.client;
+
+    import com.extjs.gxt.ui.client.widget.Window;
+    import com.google.gwt.core.client.EntryPoint;
+    import com.google.gwt.user.client.ui.RootPanel;
+
+    public class HelloWorld implements EntryPoint {
+
+        public void onModuleLoad() {
+            Window window = new Window();
+            window.setHeading("Hello World!");
+            window.setSize(300, 300);
+            window.show();
+            RootPanel.get().add(window);
+        }
+    }
+
+运行GWT_Demo
+
+![]({{ "/images/ext-gwt-2/6.jpg" | prepend: site.baseurl }})
+
+出现如上画面，成功！
+
+五、发布到Tomcat 
+------------------------------
+
+Project->Clean...->Clean projects selected below，选中GwtDemo，OK。
+
+等控制台打印出Compilation succeeded后编译完成。
+
+项目右击->Export->WAR file，导出WAR包GwtDemo.war。 
+
+将WAR包复制到Tomcat的webapps目录下，启动Tomcat。浏览器输入http://localhost:8080/GwtDemo/HelloWorld.html，出现Hello World面板，成功！

@@ -1,0 +1,55 @@
+---
+layout: post
+title: "Ubuntu下安装TURN Server (rfc5766-turn-server)"
+date: 2014-10-22 14:23
+categories: "即时通讯(IM)"
+---
+
+在使用WebRTC进行即时通讯时，需要使浏览器进行P2P通讯，但是由于NAT环境的复杂性，并不是所有情况下都能进行P2P，这时需要TURN Server来帮助客户端之间转发数据。rfc5766-turn-server是一个高性能的开源TURN Server实现。
+
+以下是在EC2上使用Ubuntu操作系统安装rfc5766-turn-server：
+
+#### 1. 下载安装包：
+
+    $ wget http://ftp.cn.debian.org/debian/pool/main/r/rfc5766-turn-server/rfc5766-turn-server_3.2.4.4-1_amd64.deb
+
+#### 2. 安装：
+
+    $ sudo apt-get update
+    $ sudo apt-get install gdebi-core
+    $ sudo gdebi rfc5766-turn-server_3.2.4.4-1_amd64.deb
+
+安装完后，在/usr/share/doc/rfc5766-turn-server下有很多文档可参考。
+
+#### 3. 配置：
+
+    $ sudo vi /etc/turnserver.conf
+    ---------------------------------------
+    // 配置IP，EC2下需要配置listening-ip和external-ip
+    listening-ip=172.31.4.37
+    external-ip=54.223.149.60
+    // 当TURN Server用于WebRTC时，必须使用long-term credential mechanism
+    lt-cred-mech
+    // 增加一个用户
+    user=username1:password1
+    // 设定realm
+    realm=mycompany.org
+    ---------------------------------------
+
+####. 4. 启动：
+
+    sudo turnserver -c /etc/turnserver.conf --daemon
+
+####. 5. 服务启动后，在上一个WebRTC示例中更改iceServers后测试：
+
+    "iceServers": [{
+        "url": "stun:stun.l.google.com:19302"
+    }, {
+        "url": "turn:54.223.149.60",
+        "username": "username1",
+        "credential": "password1"
+    }]
+
+更多安装信息在：http://turnserver.open-sys.org/downloads/v3.2.4.4/INSTALL
+
+rfc5766-turn-server当然也有STUN Server的能力，但是需要给它配置2个IP，以帮助探测客户端所在NAT环境的行为，这里没有做。

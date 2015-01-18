@@ -1,0 +1,55 @@
+---
+layout: post
+title: "LVS-DR"
+date: 2014-04-28 11:15
+categories: "Linux"
+---
+
+试用IPVS的直接路由方式来做负载均衡。服务器信息如下：
+
+![]({{ "/images/lvs-dr/1.png" | prepend: site.baseurl }})
+
+IP配置信息如下：
+
+调度服务器：Centos / 192.168.2.90 [IP] / 192.168.2.99 [IP别名] / 192.168.2.1 [网关]
+
+实际服务器1：Centos / 192.168.2.71 [IP] / 192.168.2.99 [IP别名] / 192.168.2.1 [网关]
+
+实际服务器2：Centos / 192.168.2.72 [IP] / 192.168.2.99 [IP别名] / 192.168.2.1 [网关]
+
+直接路由方式工作在数据链路层，通过修改数据包的MAC地址，将数据包转发到实际服务器上。实际服务器响应时直接发送给用户端，而不经过调度器。
+
+因为调度服务器并没有修改数据包的IP地址，所以我们需要为实际服务器设置与调度服务器相同的IP别名，以使实际服务器接受数据包。
+
+为调度服务器设置IP别名：
+
+    ifconfig eth1:0 192.168.2.99
+
+IP别名与原来的IP地址在使用上并没有什么不同，这里可以ping通90和99两个IP。
+
+为实际服务器设置IP别名：
+
+    ifconfig lo:0 192.168.2.99 broadcast 192.168.2.99 netmask 255.255.255.255 up
+
+为实际服务器添加路由规则，使它不去寻找其他拥有这个IP的服务器：
+
+    route add -host 192.168.2.99 dev lo:0
+
+防止实际服务器响应针对IP别名的ARP广播：
+
+    echo 1>/proc/sys/net/ipv4/conf/lo/arp_ignore
+    echo 2>/proc/sys/net/ipv4/conf/lo/arp_announce
+    echo 1>/proc/sys/net/ipv4/conf/all/arp_ignore
+    echo 2>/proc/sys/net/ipv4/conf/all/arp_announce
+
+使用ipvsadm配置调度服务器：
+
+    ipvsadm -A -t 192.168.2.99:8888 -s rr
+    ipvsadm -a -t 192.168.2.99:8888 -r 192.168.2.71:8888 -g
+    ipvsadm -a -t 192.168.2.99:8888 -r 192.168.2.72:8888 -g
+
+使用下面的命令将连接有效时间改为1秒来测试，：
+
+    ipvsadm --set 1 120 300
+
+浏览器访问http://192.168.2.99:8888，每隔1秒多点击刷新，就会交替出现192.168.2.71和192.168.2.72。

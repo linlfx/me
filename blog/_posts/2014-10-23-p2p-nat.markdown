@@ -1,0 +1,55 @@
+---
+layout: post
+title: "P2P中NAT之间的打洞可能性"
+date: 2014-10-23 14:17
+categories: "即时通讯(IM)"
+---
+
+我们看看不同NAT之间的NAT打洞。NAT打洞需要Server配合，需要2种Server：
+
+1. 类似WebRTC中的信令服务器，作用是帮助客户机沟通IP和PORT信息；
+2. STUN Server，用来让客户机判断自己所在的NAT环境。
+
+现在假设客户端和Server的通讯都没问题，客户端知道自己所处环境，并且将自己的信息通过服务器发送给了另一方客户端，它们可能的打洞情况如下：
+
+#### 1. Full Cone NAT 与 Full Cone NAT
+
+通讯很容易，各自通过STUN Server获取外部IP和Port后，通过信令服务器通知另一方，即可通讯。
+
+![]({{ "/images/p2p-nat/1.png" | prepend: site.baseurl }})
+
+#### 2. Full Cone NAT 与 Restricted Cone NAT或Port Restricted Cone NAT
+
+在互相告知IP和Port后，如果由Full Cone NAT端先发送数据包，会失败，必须由Restricted Cone NAT或Port Restricted Cone NAT端先发送数据包给Full Cone NAT，之后双方即可互相通讯。
+
+![]({{ "/images/p2p-nat/2.png" | prepend: site.baseurl }})
+
+#### 3. Full Cone NAT 与 Symmetric NAT
+
+必须先由Symmetric NAT端发送数据包给Full Cone NAT端，Full Cone NAT端通过发来的数据包获得目标的新端口号，之后通过这个新端口号完成互相通讯。
+
+![]({{ "/images/p2p-nat/3.png" | prepend: site.baseurl }})
+
+#### 4. Restricted Cone NAT 与 Restricted Cone NAT、Restricted Cone NAT 与 Port Restricted Cone NAT、Port Restricted Cone NAT 与 Port Restricted Cone NAT
+
+先发送数据包的一方会失败，之后另一方发送数据包成功后，可互相通讯。
+
+![]({{ "/images/p2p-nat/4.png" | prepend: site.baseurl }})
+
+#### 5. Restricted Cone NAT 与 Symmetric NAT
+
+先由Restricted Cone NAT发送数据包给Symmetric NAT，发送数据会失败，只是为了下次能接收从Symmetric NAT端发送过来的数据包。然后由Symmetric NAT发送数据包到Restricted Cone NAT端，Restricted Cone NAT端会收到数据包，并且将新的端口号记下，使用新的端口号可与Symmetric NAT端通讯。
+
+![]({{ "/images/p2p-nat/5.png" | prepend: site.baseurl }})
+
+#### 6. Port Restricted Cone NAT 与 Symmetric NAT
+
+由于Port Restricted Cone NAT会对IP:PORT对进行限制，所以当Symmetric NAT端使用新PORT发来数据包时，Port Restricted Cone NAT端收不到，它们之间无法通讯。
+
+![]({{ "/images/p2p-nat/6.png" | prepend: site.baseurl }})
+
+#### 7. Symmetric NAT 与 Symmetric NAT
+
+也无法通讯 。
+
+![]({{ "/images/p2p-nat/7.png" | prepend: site.baseurl }})

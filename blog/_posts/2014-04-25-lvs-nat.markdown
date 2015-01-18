@@ -1,0 +1,89 @@
+---
+layout: post
+title: "LVS-NAT"
+date: 2014-04-25 14:32
+categories: "Linux"
+---
+
+试用IPVS来做负载均衡，使用了1台双网卡服务器和2台单网卡服务器，2个网段。服务器信息如下：
+
+![]({{ "/images/lvs-nat/1.png" | prepend: site.baseurl }})
+
+IP配置信息如下：
+
+调度服务器：Centos / 192.168.18.58 [eth0] + 192.168.2.90 [eth1]
+
+实际服务器1：Centos / 192.168.2.71 [eth0]
+
+实际服务器2：Centos / 192.168.2.72 [eth0]
+
+一、首先配置调度服务器：
+----------------------
+
+#### 1. IPVS模块已经内置到linux2.6.x内核中，可以通过下面的命令查看是否已安装：
+
+    modprobe -l | grep ipvs
+
+看到类似下面的输出，表示已经安装了
+
+    kernel/net/netfilter/ipvs/ip_vs.ko
+    kernel/net/netfilter/ipvs/ip_vs_rr.ko
+    kernel/net/netfilter/ipvs/ip_vs_wrr.ko
+    kernel/net/netfilter/ipvs/ip_vs_lc.ko
+    kernel/net/netfilter/ipvs/ip_vs_wlc.ko
+    kernel/net/netfilter/ipvs/ip_vs_lblc.ko
+    kernel/net/netfilter/ipvs/ip_vs_lblcr.ko
+    kernel/net/netfilter/ipvs/ip_vs_dh.ko
+    kernel/net/netfilter/ipvs/ip_vs_sh.ko
+    kernel/net/netfilter/ipvs/ip_vs_sed.ko
+    kernel/net/netfilter/ipvs/ip_vs_nq.ko
+    kernel/net/netfilter/ipvs/ip_vs_ftp.ko
+    kernel/net/netfilter/ipvs/ip_vs_pe_sip.ko
+
+#### 2. 安装IPVS的管理工具ipvsadm：
+
+    yum install -y ipvsadm
+
+#### 3. 清除表中所有记录：
+
+    ipvsadm -C
+
+使用下面的命令增加虚拟服务器，采用轮询调度策略：
+
+    ipvsadm -A -t 192.168.18.58:8888 -s rr
+
+使用下面的命令添加实际服务器，并采用NAT方式转发数据包：
+
+    ipvsadm -a -t 192.168.18.58:8888 -r 192.168.2.71:9999 -m
+    ipvsadm -a -t 192.168.18.58:8888 -r 192.168.2.72:9999 -m
+
+#### 4. 打开数据包转发：
+
+    echo 1 > /proc/sys/net/ipv4/ip_forward
+
+二、接下来配置2台实际服务器，分别做以下工作：
+-----------------------
+
+#### 1. 在9999端口上启动一个web服务：
+
+配置好web服务后，当访问http://192.168.2.71:9999时，页面返回：This is 192.168.2.71.；当访问http://192.168.2.72:9999时，页面返回：This is 192.168.2.72.
+
+#### 2. 设置默认网关指向调度服务器
+
+    route del default
+    route add default gw 192.168.2.90
+
+三、测试
+-------------------
+
+访问192.168.18.58:8888，会显示This is 192.168.2.71或This is 192.168.2.72，多次刷新应该要交替出现71和72，但实际上并没有这样，浏览器只显示与第一次相同的内容，也就是ipvsadm每次都选择了同一台服务器。这是因为当一个TCP连接的初始SYN报文到达时，IPVS就选择了一台服务器，后继报文会被转发到相同的服务器。这个TCP连接在ipvsadm中默认有效时间为15分钟，可以通过下面的命令查看：
+
+    ipvsadm -L --timeout
+
+    Timeout (tcp tcpfin udp): 900 120 300
+
+现在将有效时间改为1秒来测试，使用下面的命令：
+
+    ipvsadm --set 1 120 300
+
+再到浏览器中每隔1秒多点击刷新，就会交替出现71和72，说明轮询调度正在正常工作。

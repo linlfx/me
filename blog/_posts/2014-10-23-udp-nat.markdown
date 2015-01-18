@@ -1,0 +1,44 @@
+---
+layout: post
+title: "针对UDP数据的4种NAT行为"
+date: 2014-10-23 13:56
+categories: "即时通讯(IM)"
+---
+
+针对收发UDP数据，NAT可分为Full Cone、Restricted Cone、Port Restricted Cone、Symmetric NAT四类，在RFC3489中有定义(http://datatracker.ietf.org/doc/rfc3489/?include_text=1)。
+
+一、Full Cone
+--------------
+
+所有从相同的内部IP和PORT发出的请求都映射为相同的外部IP和PORT，而后任何外部主机只要发送数据包给NAT的IP和PORT就会被转发给内部主机。
+
+![]({{ "/images/udp-nat/1.png" | prepend: site.baseurl }})
+
+从图中可以看到，只要内部主机通过NAT访问了一次外部主机，在Mapping Table中会增加一条内部IP:Port映射到NAT的端口，那么外部的任何主机都可以通过NAT的IP:PORT将数据发给内部主机。
+
+二、Restricted Cone
+----------------
+
+所有从相同的内部IP和PORT发出的请求都映射为相同的外部IP和PORT，但只有内部主机曾发送过数据的外部IP才可将数据包通过NAT的IP:PORT发给内部主机。
+
+![]({{ "/images/udp-nat/2.png" | prepend: site.baseurl }})
+
+从图中可以看到，因为内部主机没有发过数据包给外部主机B，所以外部主机发到NAT的数据包无法发给内部主机。
+
+三、Port Restricted Cone
+-----------------------
+
+和Restricted Cone类似，但是除了IP的限制外增加了PORT的限制，即只有内部主机曾发送过数据的外部IP:PORT才可将数据包通过NAT的IP:PORT发给内部主机。
+
+![]({{ "/images/udp-nat/3.png" | prepend: site.baseurl }})
+
+从图中可以看到，外部主机1用另一个PORT无法将数据发到内部主机。
+
+四、Symmetric NAT
+---------------------
+
+从内部主机相同的IP和PORT发出的请求，当访问不同外部IP和PORT时，都会在NAT上创建不同的映射。
+
+![]({{ "/images/udp-nat/4.png" | prepend: site.baseurl }})
+
+上图中虽然内部IP和PORT相同，但访问不同的外部IP/PORT对，都会映射为不同的NAT PORT。当外部主机发数据包给内部主机时，也只能使用对应的PORT。
