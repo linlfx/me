@@ -630,3 +630,6 @@ TestDemo run as Junit Test!
 到此完成Hibernate+Spring的Annotations方式整合，项目结构如下：
 
 ![]({{ "/images/ssh-extjs3/2.jpg" | prepend: site.baseurl }})
+
+
+[源码](https://github.com/gpleo/HSSEADemo.git "源码"){:target="_blank"}

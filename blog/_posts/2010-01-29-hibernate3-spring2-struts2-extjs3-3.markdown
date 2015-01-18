@@ -15,3 +15,6 @@ categories: "开发框架"
 1.    删除项目lib目录下freemarker-2.3.13.jar、jsonplugin-0.34.jar、ognl-2.6.11.jar、struts2-core-2.1.6.jar、xwork-2.1.2.jar。
 2.    从struts2.1.8.1的lib目录下复制以下文件到项目lib目录，freemarker-2.3.15.jar、json-lib-2.1.jar、ognl-2.7.3.jar、struts2-core-2.1.8.1.jar、xwork-core-2.1.6.jar。
 3.    将Struts2ExtjsBaseAction类中，引入类 com.googlecode.jsonplugin.JSONResult 替换成 org.apache.struts2.json.JSONResult。
+
+
+[源码](https://github.com/gpleo/HSSEADemo.git "源码"){:target="_blank"}
