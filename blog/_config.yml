@@ -3,13 +3,19 @@ title: 林俐的技术博客
 email: leo@gopersist.com
 description: 专注于Web开发技术
 baseurl: "" # the subpath of your site, e.g. /blog/
-url: "http://yourdomain.com" # the base hostname & protocol for your site
+url: "http://blog.gopersist.com" # the base hostname & protocol for your site
 github_username:  gpleo
 
 permalink: /:year/:month/:day/:title/
 
 # Build settings
 markdown: kramdown
+
+# comments
+comments:
+    provider: duoshuo
+    duoshuo:
+        short_name: gopersist
 
 # 分页
 paginate: 10
