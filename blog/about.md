@@ -4,8 +4,5 @@ title: 关于
 permalink: /about/
 ---
 
-我的介绍
-
-{% if site.github_username %}
-[GitHub](https://github.com/{{ site.github_username }})
-{% endif %}
+微信订阅号：![]({{ "/images/about/weixin.jpg" | prepend: site.baseurl }})
+[GitHub](https://github.com/gpleo)

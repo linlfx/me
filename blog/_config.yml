@@ -4,7 +4,6 @@ email: leo@gopersist.com
 description: 专注于Web开发技术
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://blog.gopersist.com" # the base hostname & protocol for your site
-github_username:  gpleo
 
 permalink: /:year/:month/:day/:title/
 
