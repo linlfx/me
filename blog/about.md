@@ -4,5 +4,11 @@ title: 关于
 permalink: /about/
 ---
 
-微信订阅号：![]({{ "/images/about/weixin.jpg" | prepend: site.baseurl }})
-[GitHub](https://github.com/gpleo)
+Email：<a href="mailto:leo@gopersist.com">leo@gopersist.com</a>
+
+QQ：42316099
+
+微信订阅号：<img src='{{ "/images/about/weixin.jpg" | prepend: site.baseurl }}' width='100' height='100' />
+
+GitHub：[https://github.com/gpleo](https://github.com/gpleo){:target="_blank"}
+
