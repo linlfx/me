@@ -1,0 +1,12 @@
+1. 本机执行下面的命令：
+$ ssh-keygen
+
+此时会在~/.ssh/下产生id_rsa（私钥）和id_rsa.pub（公钥）。
+
+2. 将公钥传到远端要登录的服务器：
+ssh-copy-id -i ~/.ssh/id_rsa.pub user@host
+
+需要输入密码登录一次。
+
+3. 使用私钥无密码登录：
+ssh -i ~/.ssh/id_rsa host
