@@ -8,5 +8,7 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub user@host
 
 需要输入密码登录一次。
 
+这时，在远端服务器user用户的~/.ssh目录下会有authorized_keys，里面存了id_rsa.pub的内容。
+
 3. 使用私钥无密码登录：
 ssh -i ~/.ssh/id_rsa host
