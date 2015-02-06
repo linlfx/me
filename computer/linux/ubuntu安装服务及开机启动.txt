@@ -1,0 +1,41 @@
+/etc/init.d/tomcat:
+------------------------------
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          tomcat
+# Required-Start:    $local_fs $remote_fs
+# Required-Stop:     $local_fs $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start or stop Tomcat.
+### END INIT INFO
+
+export JAVA_HOME=/usr/local/dev/jdk1.8.0_31
+export CLASSPATH=.:$JAVAHOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+export PATH=$PATH:$JAVA_HOME/bin
+export ANT_OPTS="-Xmx64m"
+export JAVA_OPTS="-Xms256m -Xmx256m"
+
+
+TOMCAT_HOME=/usr/local/dev/apache-tomcat-8.0.17
+
+$TOMCAT_HOME/bin/startup.sh
+
+case "$1" in
+    start)
+        $TOMCAT_HOME/bin/startup.sh
+    ;;
+    stop)
+        $TOMCAT_HOME/bin/shutdown.sh
+    ;;
+esac
+------------------------------
+
+添加开始启动：
+update-rc.d tomcat defaults 99  // 数字越大，越后启动
+
+禁止开机启动：
+update-rc.d tomcat disable
+
+删除开机启动：
+update-rc.d -f tomcat remove
