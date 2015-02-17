@@ -1,0 +1,11 @@
+查看所有的端口占用情况
+netstat -ano
+
+查看指定端口的占用情况
+netstat -aon|findstr "9050"
+
+查看PID对应的进程
+tasklist|findstr "2016"
+
+结束该进程
+taskkill /f /t /im tor.exe
