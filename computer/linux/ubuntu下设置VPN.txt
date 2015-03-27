@@ -1,0 +1,5 @@
+sudo apt-get install pptp-linux
+sudo pptpsetup --create tp --server 220.130.33.227 --username leo --password leo8888888888 --encryp
+sudo pon tp
+sudo route add -host 192.168.1.126 dev ppp0
+# ¶Ï¿ª poff tp
