@@ -1,0 +1,29 @@
+.DER
+二进制DER编码的证书，是ASN.1众多编码方案中的一个，也可用.RSA、.CER或.CRT作为扩展名。
+
+.PEM
+ASCII(Base64)编码的各种X.509 v3证书。文件开始与结束表示如下：
+
+PKCS#8 私钥加密格式
+-----BEGIN ENCRYPTED PRIVATE KEY-----  
+BASE64私钥内容  
+-----ENDENCRYPTED PRIVATE KEY-----  
+
+PKCS#8 私钥非加密格式
+-----BEGIN PRIVATE KEY-----  
+BASE64私钥内容  
+-----END PRIVATEKEY-----  
+
+.CRT
+证书可以是DER编码也可以是PEM编码，这种扩展名在*nix中很常见。
+
+.CER
+CRT证书的微软形式。
+
+
+-------------------------------------------------
+
+PKCS：全称Public-Key Cryptography Standards。目前有15个标准，常用有PKCS#12。
+
+X.509是常见通用的证书格式，符合PKI(Public Key Infrastructure)制定的ITU-T X509国际标准。
+
