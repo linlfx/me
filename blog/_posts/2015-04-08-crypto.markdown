@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "对加密机制的理解"
+title: "Web安全技术(1)-对加密机制的理解"
 date: 2015-04-08 00:59
-categories: ["安全"]
+categories: ["Web", "安全"]
 ---
 
 加密算法
