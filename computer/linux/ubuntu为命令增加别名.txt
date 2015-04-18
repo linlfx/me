@@ -1,0 +1,5 @@
+alias emacs='emacs -nw'
+
+永久生效：
+sudo emacs /etc/bash.bashrc
+在最后一行添加：alias emacs='emacs -nw'
