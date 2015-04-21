@@ -1,0 +1,3 @@
+在~/.emacs中增加下面一行代码，如果~/.emacs不存在就新建文件。
+
+(setq make-backup-files nil)
