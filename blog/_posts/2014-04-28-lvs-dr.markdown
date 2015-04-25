@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "LVS-DR"
+title: "Linux负载均衡(3)-LVS-DR"
 date: 2014-04-28 11:15
 categories: "Linux"
 ---

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Linux Keepalived 实现双机热备"
+title: "Linux负载均衡(4)-Linux Keepalived 实现双机热备"
 date: 2014-09-24 11:34
 categories: "Linux"
 ---

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "LVS-NAT"
+title: "Linux负载均衡(2)-LVS-NAT"
 date: 2014-04-25 14:32
 categories: "Linux"
 ---

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "IPTABLES NAT"
+title: "Linux负载均衡(1)-IPTABLES NAT"
 date: 2014-04-24 17:15
 categories: "Linux"
 ---

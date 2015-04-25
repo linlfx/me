@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Ubuntu下安装TURN Server (rfc5766-turn-server)"
+title: "WebRTC系列(2)-Ubuntu下安装TURN Server (rfc5766-turn-server)"
 date: 2014-10-22 14:23
 categories: "即时通讯(IM)"
 ---

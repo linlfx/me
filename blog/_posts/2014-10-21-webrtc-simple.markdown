@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "最简单的WebRTC示例"
+title: "WebRTC系列(1)-最简单的WebRTC示例"
 date: 2014-10-21 17:21
 categories: "即时通讯(IM)"
 ---
