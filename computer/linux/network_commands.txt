@@ -1,0 +1,12 @@
+ICMP协议：一种面向无连接的网络层协议，主要用于在主机与路由器之间传递控制信息，目的是让我们能够检测网络的连线状况。
+
+nslookup 用于查询域名信息或诊断DNS有没有正确解析。
+eg: nslookup picowork.cn
+
+tracepath 追踪到指定目的地址的网络路径，ubuntu预装了该命令。
+eg: tracepath picowork.cn
+
+mtr 网络连通性判断工具，结合了ping, traceroute, nslookup的相关特性。
+eg: mtr picowork.cn
+
+
