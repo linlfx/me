@@ -1,0 +1,13 @@
+添加submodule：
+
+git submodule add git@192.168.1.126:/uhutt/pcloud-node-sdk.git submodules/pcloud-node-sdk
+
+git submodule init
+git submodule update
+
+删除submodule：
+
+emacs .gitmodules   // 删除对应内容
+emacs .git/config   // 删除对应内容
+git rm --cached submodules/pcloud-node-sdk
+rm -rf submodules/pcloud-node-sdk
