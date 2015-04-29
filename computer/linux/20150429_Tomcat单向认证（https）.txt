@@ -1,0 +1,14 @@
+单向认证：对传输的数据加密，不会检验客户端来源。
+双向认证：如果客户端没有导入证书，不能访问Web系统。
+
+如果想要没有证书的客户端不能访问系统，就用双向认证，否则单向认证就可以了。
+
+单向认证操作步骤如下：
+
+1. 使用下面的命令生成tomcat.keystore：
+keytool -v -genkey -alias tomcat -keyalg RSA -keystore tomcat.keystore -validity 3650
+
+2. 修改Tomcat的server.xml文件：
+<Connector port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol" maxThreads="150" SSLEnabled="true" scheme="https" secure="true" keystoreFile="/home/leo/a_dev/apache-tomcat-8.0.12/conf/ssl/tomcat.keystore" keystorePass="111111" clientAuth="false" sslProtocol="TLS" />
+
+找到上面这段，把注释去掉。另外设定keystoreFile和keystorePass，keystoreFile就是上面产生的tomcat.keystore的路径，keystorePass就是产生keystoreFile的过程中输入的密码。
