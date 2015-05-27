@@ -5,7 +5,7 @@ date: 2015-05-28 15:17
 categories: ["Web", "缓存", "Memcached"]
 ---
 
-互联网上的应用、网站，随着用户的增长，功能的增强，会导致服务器超载，响应变慢等问题。缓存技术是减轻服务器压力、加快服务响应时间、提升用户体验的有效途径。这里介绍以Memcached作为缓存实现的使用及能解决的问题。
+互联网上的应用、网站，随着用户的增长，功能的增强，会导致服务器超载，响应变慢等问题。缓存技术是减轻服务器压力、加快服务响应时间、提升用户体验的有效途径。Memcached是非常流行的缓存系统，这里会介绍对Memcached的安装、设定，以及在集群环境下的使用。
 
 Memcached
 -------------------------
@@ -27,10 +27,15 @@ __启动：__
     memcached -m 100 -p 11211 -d -t 2 -c 1024 -P /tmp/memcached.pid
 
 > -m 指定使用的内存容量，单位MB，默认64MB。
+>
 > -p 指定监听的TCP端口，默认11211。
+>
 > -d 以守护进程模式启动。
+>
 > -t 指定线程数，默认为4。
+>
 > -c 最大客户端连接数，默认为1024。
+>
 > -P 保存PID文件。
 
 __关闭：__
@@ -43,44 +48,50 @@ __测试：__
 
     telnet localhost 11211
 
+存储命令格式：
+
     set foo 0 0 4
     abcd
     STORED
+    
+    <command name> <key> <flags> <exptime> <bytes>
+    <data block>
+    
+    <command name> set, add, replace等
+    <key> 关键字
+    <flags> 整形参数，存储客户端对键值的额外信息，如值是压缩的，是字符串，或JSON等
+    <exptime> 数据的存活时间，单位为秒，0表示永远
+    <bytes> 存储值的字节数
+    <data block> 存储的数据内容
 
-> 存储命令格式：
-> <command name> <key> <flags> <exptime> <bytes>
-> <data block>
-> 
-> <command name> set, add, replace等
-> <key> 关键字
-> <flags> 整形参数，存储客户端对键值的额外信息，如值是压缩的，是字符串，或JSON等
-> <exptime> 数据的存活时间，单位为秒，0表示永远
-> <bytes> 存储值的字节数
-> <data block> 存储的数据内容
-
+读取命令格式：
+    
     get foo
     VALUE foo 0 4
     abcd
     END
 
-> 读取命令格式：
-> <command name> <key>
-> 
-> <command name> get, gets。gets比get多返回一个数字，这个数字检查数据有没有发生变化，当key对应的数据改变时，gets多返回的数字也会改变。
-> <key> 关键字
-> 
-> 返回的数据格式：
-> VALUE <key> <flags> <bytes>
+    <command name> <key>
+    
+    <command name> get, gets。gets比get多返回一个数字，这个数字检查数据有没有发生变化，当key对应的数据改变时，gets多返回的数字也会改变。
+    <key> 关键字
+    
+    返回的数据格式：
+
+    VALUE <key> <flags> <bytes>
+
+CAS(checked and set)：
 
     cas foo 0 0 4 1
     cdef
     STORED
 
-> CAS(checked and set)：
-> cas <key> <flags> <exptime> <bytes> <version>
-> 
-> 除最后的<version>外，其他参数与set, add等命令相同，<version>的值需要与gets获取的值相同，否则无法更新。
-> incr, decr可对数字型数据进行原子增减操作。
+    cas <key> <flags> <exptime> <bytes> <version>
+    
+    除最后的<version>外，其他参数与set, add等命令相同，<version>的值需要与gets获取的值相同，否则无法更新。
+    incr, decr可对数字型数据进行原子增减操作。
+
+全局统计信息
 
     stats
     STAT pid 10218
@@ -99,8 +110,6 @@ __测试：__
     STAT delete_hits 0
     ...
     END
-
-> 全局统计信息
 
 Memcached集群
 ------------------------
