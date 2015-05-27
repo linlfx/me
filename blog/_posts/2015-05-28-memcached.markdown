@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Web缓存技术-Memcached"
+title: "Memcached"
 date: 2015-05-28 15:17
 categories: ["Web", "缓存", "Memcached"]
 ---
