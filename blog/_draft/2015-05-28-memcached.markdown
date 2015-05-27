@@ -1,13 +1,28 @@
 ---
 layout: post
-title: "Web缓存技术-Memcached"
-date: 2015-05-28 15:17
-categories: ["Web", "缓存", "Memcached"]
+title: "Web缓存技术-Redis"
+date: 2015-05-31 23:22
+categories: ["Web", "缓存", "Redis"]
 ---
+
+相对于Memcached，Redis的功能要丰富得多，越来越多的系统使用Redis来替代Memcached。
+
+Redis介绍
+----------------------
+
+
+
+
+
+
+
+
+
+
 
 互联网上的应用、网站，随着用户的增长，功能的增强，会导致服务器超载，响应变慢等问题。缓存技术是减轻服务器压力、加快服务响应时间、提升用户体验的有效途径。Memcached是非常流行的缓存系统，这里会介绍对Memcached的安装、设定，以及在集群环境下的使用。
 
-Memcached简介
+Memcached
 -------------------------
 
 Memcached是一个开源、高性能、分布式的内存缓存系统，用于加速动态网站的访问，减轻数据库负载。
@@ -15,9 +30,6 @@ Memcached是一个开源、高性能、分布式的内存缓存系统，用于�
 Memcached使用了Slab Allocator的机制分配、管理内存，解决了内存碎片的问题。
 
 Memcached虽然可以在多线程模式下运行，但线程数通常只需设定为与CPU数量相同，这一点与Nginx的设定类似。
-
-Memcached使用
--------------------------
 
 __安装:__
 
