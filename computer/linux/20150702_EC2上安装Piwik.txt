@@ -1,0 +1,108 @@
+sudo yum update -y
+sudo yum groupinstall -y "Development Tools"
+sudo yum install -y nginx mysql-server php-fpm php-mysql php-mbstring
+
+====================================================================
+启动mysql
+====================================================================
+sudo service mysqld start
+
+添加开机启动
+---------------------------------
+sudo chkconfig mysqld on
+
+====================================================================
+配置并启动php
+====================================================================
+sudo vi /etc/php-fpm.d/www.conf
+----------------------
+user = nginx
+group = nginx
+----------------------
+sudo /etc/init.d/php-fpm start
+
+添加开机启动
+---------------------------------
+sudo chkconfig php-fpm on
+
+PHP其他命令
+----------------------
+# 关闭PHP
+sudo /etc/init.d/php-fpm stop
+
+# 重启PHP
+sudo /etc/init.d/php-fpm restart
+
+====================================================================
+配置并启动php
+====================================================================
+sudo vi /etc/nginx/nginx.conf
+----------------------
+# 放开php的注释并稍做调整
+location ~ \.php$ {
+    root           html;
+    fastcgi_pass   127.0.0.1:9000;
+    fastcgi_index  index.php;
+    fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+    include        fastcgi_params;
+}
+----------------------
+sudo nginx
+
+添加开机启动
+---------------------------------
+sudo chkconfig nginx on
+
+====================================================================
+下载Piwik
+====================================================================
+cd /usr/share/nginx/html
+sudo wget http://builds.piwik.org/piwik.zip
+sudo unzip piwik.zip
+sudo chown -R nginx:nginx piwik
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+进入安装页：
+http://54.223.189.12/piwik/index.php
+
+Welcome! 点 Next。
+System Check 会检查系统是否满足安装Piwik的条件，安装了上述内容就可以。 点 Next。
+Database Setup 设定 login = root，Database Name = piwik，其余都默认。点 Next。
+Creating the Tables 点 Next。
+Super User 设定Piwik的超级管理员，根据需要设定完。点 Next。(u3d / u3dsp@ce)
+Setup a Website 设定使用Piwik的网站。根据提示设定。点 Next。
+JavaScript Tracking Code 复制页面提供的JavaScript跟踪代码到网站页面内，这部可以以后再做。点 Next。
+Congratulations 根据需要调整Piwik的配置，完成后点 Continue to Piwik。
+
+安装完成，使用刚才设定的Piwik超级管理员登录。登录后，因为还没有数据，它会提示添加JavaScript跟踪代码。
+
+新建一个html文件，填入类似下面的内容：
+<html>
+<head>
+</head>
+<body>
+Hello!
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//54.223.189.12/piwik/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 1]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//54.223.189.12/piwik/piwik.php?idsite=1" style="border:0;" alt="" /></p></noscript>
+<!-- End Piwik Code -->
+</body>
+</html>
+
+上面Piwik的跟踪代码你需要从你的网页上复制。保存上面的内容，并放到Web容器中，浏览器访问页面一次。
+
+这时再刷新Piwik页面，就能看到统计的数据。
+
+
