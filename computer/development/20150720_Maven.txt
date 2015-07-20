@@ -1,0 +1,34 @@
+1. 命名规范
+groupId：域名反向.实际项目名，如 com.gopersist.bookstore
+artifactId：实际项目名-模块名，如 bookstore-dao
+
+2. 主要命令
+mvn clean compile
+mvn clean test
+mvn clean package
+mvn clean install
+
+执行test前会执行compile，执行package前会先执行test，执行install前会先执行package。如果是打jar包，install会将jar复制到maven本地仓库，以便其他项目使用。
+
+3. 编译插件
+Maven默认只支持编译Java 1.3，需要配置下面的插件：
+<project>
+...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+...
+</project>
+
+4. JUnit
+JUnit3：需要测试的方法必须以test开头
+JUnit4：需要测试的方法前增加@Test注解
