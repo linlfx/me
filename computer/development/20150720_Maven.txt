@@ -96,6 +96,22 @@ JUnit4：需要测试的方法前增加@Test注解
 
 私服可以作为所有远程仓库的镜像，配置时将mirrorOf改为*
 
+8. 查看帮助
+mvn help:describe -Dplugin=org.apache.maven.plugins:maven-war-plugin
+mvn help:describe -Dplugin=org.apache.maven.plugins:maven-war-plugin -Ddetail
+
+出自apache的插件列表：
+http://maven.apache.org/plugins/index.html
+
+9. 关于插件的说明
+插件远程仓库的配置与依赖不同，配置为<pluginRepositories>，一般默认配置的即可，不需要特别设定。
+
+pom中配置插件时，哪果groupId为org.apache.maven.plugins（官方插件），则可省略groupId，但不推荐。
+
+
+
+
+
 
 
 
