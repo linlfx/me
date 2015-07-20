@@ -1,6 +1,16 @@
+1. Maven工作目录
+~/.m2
+本地仓库：~/.m2/repository
+
 1. 命名规范
 groupId：域名反向.实际项目名，如 com.gopersist.bookstore
 artifactId：实际项目名-模块名，如 bookstore-dao
+
+2. 目录规范
+src/main/java
+src/main/resources
+src/test/java
+src/test/resources
 
 2. 主要命令
 mvn clean compile
@@ -9,6 +19,16 @@ mvn clean package
 mvn clean install
 
 执行test前会执行compile，执行package前会先执行test，执行install前会先执行package。如果是打jar包，install会将jar复制到maven本地仓库，以便其他项目使用。
+
+mvn clean deploy  将构件部署到远程仓库
+
+4. 依赖范围(scope)
+compile：默认，编译、测试、运行三种classpath都有效
+test：编译及运行测试代码时有效，如junit
+provided：编译和测试时有效，运行时无效，如servlet-api
+runtime：测试和运行时有效，编译时无效，如jdbc驱动实现
+system：与provided一致，但需要设定systemPath指定本机路径，可能造成不可移植
+import：导入依赖范围
 
 3. 编译插件
 Maven默认只支持编译Java 1.3，需要配置下面的插件：
@@ -32,3 +52,50 @@ Maven默认只支持编译Java 1.3，需要配置下面的插件：
 4. JUnit
 JUnit3：需要测试的方法必须以test开头
 JUnit4：需要测试的方法前增加@Test注解
+
+5. 构件部署至私服
+<project>
+...
+  <distributionManagement>
+    <repository>
+      <id>proj-releases</id>
+      <name>Proj Release Repository</name>
+      <url>http://192.168.1.100/content/repositories/proj-releases</url>
+    </repository>
+    <snapshotRepository>
+      <id>proj-snapshots</id>
+      <name>Proj Snapshot Repository</name>
+      <url>http://192.168.1.100/content/repositories/proj-releases</url>
+    </snapshotRepository>
+  </distributionManagement>
+...
+</project>
+
+部署构件时通常需要认证，即要在settings.xml中创建一个server元素，id与仓库的id匹配。
+
+6. 关于对快照的依赖
+同一个快照版本可能有很多打上不同时间戳的构件，不能有对外部构件的快照依赖，快照依赖只有在开发中模块之间和组织内部的依赖。
+<snapshots>的<updatePolicy>应当设定为永远检查。
+
+7. 配置镜像
+./m2/settings.xml
+<settings>
+...
+  <mirrors>
+    <mirror>
+      <id>maven.net.cn</id>
+      <name>one of the central mirror in China</name>
+      <url>http://maven.net.cn/content/groups/public/</url>
+      <mirrorOf>central</mirrorOf>
+    </mirror>
+  </mirrors>
+...
+</settings>
+
+设置默认中央库central的中国区镜像。
+
+私服可以作为所有远程仓库的镜像，配置时将mirrorOf改为*
+
+
+
+
