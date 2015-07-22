@@ -1,0 +1,23 @@
+1. 安装JDK8
+从官网下载JDK8(http://www.oracle.com/technetwork/java/javase/downloads/index.html)，解压到~/dev目录下，在相同目录下创建软链接jdk1.8(方便以后升级)，并配置/etc/profile，在最后增加类似下面的代码：
+
+    DEV_HOME=/home/leo/dev
+    JAVA_HOME=$DEV_HOME/jdk1.8
+    PATH=$JAVA_HOME/bin:$PATH
+    export DEV_HOME JAVA_HOME PATH
+
+因为环境中可能安装了OpenJDK7，所以PATH中的配置要将新的JDK放前面，不然还是用的系统中的JDK。
+
+source /etc/profile
+java -version 查看安装是否正确
+
+2. 安装Maven
+从官网下载Maven(http://maven.apache.org/download.cgi)，解压到~/dev目录下，创建软链接maven3，并配置/etc/profile，增加类似下面的代码：
+
+    MAVEN_HOME=$DEV_HOME/maven3
+    PATH=$JAVA_HOME/bin:$MAVEN_HOME/bin:$PATH
+    export DEV_HOME JAVA_HOME MAVEN_HOME PATH
+
+source /etc/profile
+mvn -v 查看安装是否正确
+
