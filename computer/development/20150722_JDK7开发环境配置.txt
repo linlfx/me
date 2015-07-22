@@ -21,3 +21,4 @@ java -version 查看安装是否正确
 source /etc/profile
 mvn -v 查看安装是否正确
 
+3. 安装MySql
