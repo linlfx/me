@@ -1,0 +1,18 @@
+1. 首先在~/.ssh/config中配置连接信息如下：
+
+    Host piwik
+    Hostname 54.223.224.220
+    User ec2-user
+    IdentityFile /home/leo/1_workspace/s_server/aws/cn/leo_cn.pem
+    RemoteForward 13122 192.168.1.126:22
+
+2. 使用 ssh piwik 连接到远程服务器。
+
+3. 在远程服务器的~/.ssh/config中配置连接信息如下：
+
+    HostName 127.0.0.1
+    User git
+    IdentityFile /home/ec2-user/.ssh/id_rsa
+    Port 13122
+
+4. 这时使用 git clone git@192.168.1.126:u3d/uhutt-cloud-mainstream.git 即可连接到Git获取内容。
