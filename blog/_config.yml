@@ -21,4 +21,4 @@ paginate: 10
 paginate_path: "page:num"
 
 # 代码高亮
-pygments: true
+highlighter: pygments

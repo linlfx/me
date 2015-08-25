@@ -1,0 +1,201 @@
+---
+layout: post
+title: "网站统计-Piwik"
+date: 2015-08-25 23:21
+categories: ["Web", "统计", "Piwik"]
+---
+
+帮助做网站统计的服务非常多，比如Google Analytics、百度统计、MixPanel等，但这些都不能将统计服务部署在自己的服务器上。Piwik是一个以PHP和MySQL实现的开放源代码的Web统计软件，可以产生许多实用的网站统计报告，也可以通过插件来扩展功能。
+
+Piwik介绍
+--------------------------
+
+#### Piwik的特点 ####
+
+1. 开源项目；
+2. 没有数据存储限制；
+3. 社区支持；
+4. 随时随地可查看数据；
+5. 支持 53 种语言和所有时区；
+6. 5 分钟完成安装，1 键更新。
+
+#### Piwik可以用来做什么 ####
+
+1. Web 分析；
+2. 电子商务分析；
+3. 服务端日志分析；
+4. 内网分析。
+
+#### 查看用户在网站上的信息 ####
+
+1. 可定制的仦表盘；
+2. 实时数据；
+3. 查看历叱数据，一次比较多个方面；
+4. 地理位置分析。
+
+Piwik在Amazon Linux上的安装脚本及步骤记录
+-------------------------------------------
+
+#### 通过yum安装必要软件 ####
+
+    sudo yum update -y
+    sudo yum groupinstall -y "Development Tools"
+    sudo yum install -y nginx mysql-server php56-fpm php56-mysqlnd php56-gd php56-mbstring
+    
+    # 查找php5相关可安装包
+    # sudo yum search php5
+
+#### 启动MySQL ####
+
+    sudo service mysqld start
+    
+    # 添加开机启动
+    sudo chkconfig mysqld on
+
+#### 配置并启动PHP ####
+
+    sudo vi /etc/php-fpm.d/www.conf
+    
+    # 将user和group从apache改为nginx
+    ----------------------
+    user = nginx
+    group = nginx
+    ----------------------
+    
+    sudo /etc/init.d/php-fpm start
+    
+    # 添加开机启动
+    sudo chkconfig php-fpm on
+    
+    # PHP其他命令记录
+    # sudo /etc/init.d/php-fpm stop
+    # sudo /etc/init.d/php-fpm restart
+
+#### 配置并启动Nginx ####
+
+    sudo vi /etc/nginx/nginx.conf
+    
+    ----------------------
+    # 放开 php 的注释并稍做调整
+    location ~ \.php$ {
+        root html;
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+    ----------------------
+    
+    sudo nginx
+    
+    # 添加开机启动
+    sudo chkconfig nginx on
+
+#### 下载Piwik ####
+
+    cd /usr/share/nginx/html
+    sudo wget http://builds.piwik.org/piwik.zip
+    sudo unzip piwik.zip
+    sudo chown -R nginx:nginx piwik
+
+#### 进入安装页 ####
+
+    http://54.223.189.12/piwik/index.php
+    Welcome! 点 Next。
+    System Check 会检查系统是否满足安装Piwik的条件，安装了上述内容就可以。点 Next。
+    Database Setup 设定 login = root，Database Name = piwik，其余都默认。点 Next。
+    Creating the Tables 点 Next。
+    Super User 设定 Piwik 的超级管理员，根据需要设定完。点 Next。(u3d / u3dsp@ce)
+    Setup a Website 设定使用 Piwik 的网站。根据提示设定。点 Next。
+    JavaScript Tracking Code 复制页面提供的 JavaScript 跟踪代码到网站页面内，这部可以
+    以后再做。点 Next。
+    Congratulations 根据需要调整 Piwik 的配置，完成后点 Continue to Piwik。
+
+安装完成，使用刚才设定的Piwik超级管理员登录。登录后，因为还没有数据，它会提示添加JavaScript跟踪代码。
+
+Piwik API Demo
+----------------------------
+
+#### 最简单的页面访问Demo ####
+
+在页面中加入类似下面的代码：
+
+    <!-- Piwik -->
+    <script type="text/javascript">
+        var _paq = _paq || [];
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function() {
+            var u="//54.223.224.220/piwik/";
+            _paq.push(['setTrackerUrl', u+'piwik.php']);
+            _paq.push(['setSiteId', 1]);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+        })();
+    </script>
+    <!-- End Piwik Code -->
+
+访问一次含上述代码的页面，可以在 Piwik 控制台看到记录到的访问统计：
+
+![]({{ "/images/piwik/1.png" | prepend: site.baseurl }})
+
+#### 带访客信息的页面访问Demo ####
+
+在页面中加入类似下面的代码：
+
+    <!-- Piwik -->
+    <script type="text/javascript">
+        var _paq = _paq || [];
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function() {
+            var u="//54.223.224.220/piwik/";
+            _paq.push(['setTrackerUrl', u+'piwik.php']);
+            _paq.push(['setSiteId', 1]);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+        })();
+    
+        _paq.push(['setUserId', '1234567890']);
+        _paq.push(['setCustomVariable', 1, 'Name', 'Tom', 'visit']);
+        _paq.push(['setCustomVariable', 2, 'Email', 'Tom@test.com', 'visit']);
+    </script>
+
+访问一次含上述代码的页面，可以在 Piwik 控制台的 Visitors-Visitor Log 中看到访客信息：
+
+![]({{ "/images/piwik/2.png" | prepend: site.baseurl }})
+
+#### 事件记录Demo ####
+
+在页面中加入类似下面的代码：
+
+    <!-- Piwik -->
+    <script type="text/javascript">
+        var _paq = _paq || [];
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function() {
+            var u="//54.223.224.220/piwik/";
+            _paq.push(['setTrackerUrl', u+'piwik.php']);
+            _paq.push(['setSiteId', 1]);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+        })();
+    
+        _paq.push(['setUserId', '1234567890']);
+        _paq.push(['setCustomVariable', 1, 'Name', 'Tom', 'visit']);
+        _paq.push(['setCustomVariable', 2, 'Email', 'Tom@test.com', 'visit']);
+    </script>
+    <!-- End Piwik Code -->
+    
+    <a href="#" onclick="javascript:_paq.push(['trackEvent', 'Work', 'Login']);">Login</a>
+    <a href="#" onclick="javascript:_paq.push(['trackEvent', 'Work', 'Open', '123456789098774']);">Open Work</a>
+    <a href="#" onclick="javascript:_paq.push(['trackEvent', 'Work', 'Close', '123456789098774']);">Close Work</a>
+    <a href="#" onclick="javascript:_paq.push(['trackGoal', 1, 10]);">Track Goal</a>
+    <a href="#" onclick="javascript:_paq.push(['trackSiteSearch', 'Keyword-Taipei', 'Category1', 10]);">Track SiteSearch</a>
+    <a href="#" onclick="javascript:_paq.push(['trackLink', 'http://www.baidu.com', 'link']);">Track Link</a>
+
+访问页面并将所有按钮点击一次，还是去 Piwik 的 Visitor Log 中可以看到下面的信息：
+
+![]({{ "/images/piwik/2.png" | prepend: site.baseurl }})
+
