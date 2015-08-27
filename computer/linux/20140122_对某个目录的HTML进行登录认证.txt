@@ -1,0 +1,16 @@
+1. 使用apache的htpasswd工具来创建密码文件
+yum install httpd
+htpasswd -c /opt/nginxpwd user
+New password:
+...
+
+2. 在nginx.conf文件中对应的server段添加如下内容
+auth_basic "TEST-Login!";
+auth_basic_user_file /opt/nginxpwd;
+
+也可以只对某个目录控制
+location ^~ /test/ {
+auth_basic "TEST-Login!";
+auth_basic_user_file /opt/nginxpwd;
+}
+

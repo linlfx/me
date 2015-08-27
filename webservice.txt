@@ -1,4 +1,0 @@
-代码优先和契约优先两种开发WebService的方式。
-http://blog.csdn.net/woshixuye/article/details/14118483
-
-具有争议性的架构，拙劣的契约置后模型。
