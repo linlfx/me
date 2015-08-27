@@ -15,4 +15,6 @@
     IdentityFile /home/ec2-user/.ssh/id_rsa
     Port 13122
 
+# 如果出现类似Bad owner or permissions on /home/ec2-user/.ssh/config的错误，将config的权限改为600。
+
 4. 这时使用 git clone git@192.168.1.126:u3d/uhutt-cloud-mainstream.git 即可连接到Git获取内容。
