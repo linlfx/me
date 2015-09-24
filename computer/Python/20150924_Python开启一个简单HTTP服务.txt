@@ -1,0 +1,5 @@
+# 进入想要提供HTTP访问的目录，输入下面的命令
+python -m SimpleHTTPServer 8888
+
+# 这样就可以通过http://IP:8888/filename.zip来访问目录下的相关文件了。
+
