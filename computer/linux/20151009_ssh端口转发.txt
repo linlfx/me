@@ -1,0 +1,4 @@
+ssh -L <local port>:<remote host>:<remote port> <SSH hostname>
+ssh -L 1140:192.168.1.140:1140 -p 15900 root@58.246.39.26
+
+192.168.1.140为ssh连接主机的本地IP，只要ssh连接主机能访问的IP:PORT，就可以通过这样的命令让本机访问。
