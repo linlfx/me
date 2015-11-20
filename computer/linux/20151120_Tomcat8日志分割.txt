@@ -1,0 +1,25 @@
+1. 将下面三个包放入Tomcat的lib目录下：
+log4j-1.2.17.jar
+(http://logging.apache.org/log4j/1.2/download.html)
+tomcat-juli.jar, tomcat-juli-adapters.jar
+(http://www.apache.org/dist/tomcat/tomcat-8/v8.0.28/bin/extras/)
+
+2. 将tomcat-juli.jar复制到Tomcat的lib目录下替换原来的文件。
+
+3. 修改Tomcat的conf/context.xml，将 <Context> 改为 <Context swallowOutput="true">
+
+4. 将conf/logging.properties改名或删除。
+
+5. 在lib目录下创建 log4j.properties 文件，并写入下面的内容：
+
+log4j.rootLogger=INFO, R,A1
+log4j.appender.A1=org.apache.log4j.ConsoleAppender
+log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+log4j.appender.A1.layout.ConversionPattern=%d [%t] %-5p %c - %m%n
+log4j.appender.R=org.apache.log4j.DailyRollingFileAppender
+log4j.appender.R.DatePattern='.'yyyy-MM-dd
+log4j.appender.R.File=/usr/local/tomcat/logs/catalina.log
+log4j.appender.R.layout=org.apache.log4j.PatternLayout
+log4j.appender.R.layout.ConversionPattern=%d [%t] %-5p %c - %m%n
+
+6. 重启服务。
