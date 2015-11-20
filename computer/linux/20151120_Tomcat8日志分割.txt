@@ -12,13 +12,10 @@ tomcat-juli.jar, tomcat-juli-adapters.jar
 
 5. 在lib目录下创建 log4j.properties 文件，并写入下面的内容：
 
-log4j.rootLogger=INFO, R,A1
-log4j.appender.A1=org.apache.log4j.ConsoleAppender
-log4j.appender.A1.layout=org.apache.log4j.PatternLayout
-log4j.appender.A1.layout.ConversionPattern=%d [%t] %-5p %c - %m%n
+log4j.rootLogger=INFO, R
 log4j.appender.R=org.apache.log4j.DailyRollingFileAppender
 log4j.appender.R.DatePattern='.'yyyy-MM-dd
-log4j.appender.R.File=/usr/local/tomcat/logs/catalina.log
+log4j.appender.R.File=/usr/local/tomcat/logs/catalina.out
 log4j.appender.R.layout=org.apache.log4j.PatternLayout
 log4j.appender.R.layout.ConversionPattern=%d [%t] %-5p %c - %m%n
 
