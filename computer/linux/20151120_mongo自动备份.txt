@@ -1,0 +1,45 @@
+1. 创建一个shell脚本，包含以下内容，注意备份文件地址。将脚本设定为可执行。
+
+#!/bin/bash
+targetpath='/home/ec2-user/backup/mongodb_auto'
+nowtime=$(date +%Y%m%d_%H%M%S)
+
+start()
+{
+  mongodump --host 127.0.0.1 --port 27017 -d pcloud --out ${targetpath}/${nowtime}
+}
+
+execute()
+{
+  start
+  if [ $? -eq 0 ]
+  then
+    echo "backup successfully!"
+  else
+    echo "backup failure!"
+  fi
+}
+
+if [ ! -d "${targetpath}/${nowtime}/" ]
+then
+ mkdir -p ${targetpath}/${nowtime}
+fi
+
+execute
+
+echo "============== backup finished ${nowtime} =============="
+
+2. 添加计划任务，注意创建日志文件夹。以下任务表示每天凌晨2点执行。
+
+vi /etc/crontab
+
+00 02 * * * /home/ec2-user/auto-backup.sh >> /home/ec2-user/logs/auto-backup.log
+
+3. 恢复数据库
+
+进入某一个日期的目录，执行类似下面的命令：
+
+mongorestore --drop -d pcloud pcloud/
+
+--drop参数：恢复数据之前删除原来数据库数据，避免数据重复。
+
