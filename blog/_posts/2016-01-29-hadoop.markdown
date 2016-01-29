@@ -46,18 +46,16 @@ Hadoop安装
 
 #配置etc/hadoop/core-site.xml#
 
-```xml
-<configuration>
-  <property>
-    <name>hadoop.tmp.dir</name>
-    <value>/home/ec2-user/data</value>
-  </property>
-  <property>
-    <name>fs.defaultFS</name>
-    <value>hdfs://localhost:9000</value>
-  </property>
-</configuration>
-```
+    <configuration>
+      <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/home/ec2-user/data</value>
+      </property>
+      <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://localhost:9000</value>
+      </property>
+    </configuration>
 
 hadoop.tmp.dir用于配置HDFS的基础目录，如果不配置，默认是/tmp/hadoop-${user.name}。使用mkdir /home/ec2-user/data建立目录。
 
@@ -67,14 +65,12 @@ fs.defaultFS配置默认的HDFS连接路径。
 
 #配置etc/hadoop/hdfs-site.xml#
 
-```xml
-<configuration>
-  <property>
-    <name>dfs.replication</name>
-    <value>1</value>
-  </property>
-</configuration>
-```
+    <configuration>
+      <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+      </property>
+    </configuration>
 
 dfs.replication用于设置DataNode中存储的数据块的副本数量，默认值是3。
 
