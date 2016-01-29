@@ -123,7 +123,7 @@ dfs.replication用于设置DataNode中存储的数据块的副本数量，默认
     bin/hdfs dfs -get /user/output output
     cat output/*
 
-#停止HDFS守护进程的命令＃
+#停止HDFS守护进程的命令#
 
     sbin/stop-dfs.sh
 
