@@ -1,0 +1,129 @@
+---
+layout: post
+title: "Hadoop(1)-入门示例"
+date: 2016-01-29 17:08
+categories: ["大数据", "Hadoop", "HDFS"]
+---
+
+Hadoop安装
+-------------------------
+
+现在最新版为2.7.2，使用下面的链接下载：
+
+> https://archive.apache.org/dist/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz
+
+下载后使用下面的命令解压：
+
+    tar zxf hadoop-2.7.2.tar.gz
+
+进入解压后的目录，通过下面的命令，检查Hadoop是否可正常执行：
+
+    hadoop version
+
+看到类似如下信息，即可正常使用：
+
+    Hadoop 2.7.2
+    Subversion https://git-wip-us.apache.org/repos/asf/hadoop.git -r b165c4fe8a74265c792ce23f546c64604acf0e41
+    Compiled by jenkins on 2016-01-26T00:08Z
+    Compiled with protoc 2.5.0
+    From source with checksum d0fda26633fa762bff87ec759ebe689c
+    This command was run using /home/ec2-user/hadoop-2.7.2/share/hadoop/common/hadoop-common-2.7.2.jar
+
+单机运行
+--------------------------
+
+这是官网的一个示例，单机模式下，使用hadoop的mapreduce统计文件中与正则表达式匹配的数据，并将结果保存指定位置。
+
+    mkdir input
+    cp etc/hadoop/*.xml input/
+    bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.2.jar grep input output 'dfs[a-z.]+'
+    cat output/*
+
+伪分布式模式
+--------------------------
+
+如果只有一台服务器用来测试，那么可以使用伪分布式，这时Hadoop的各个组件都拥有一个独立的进程。伪分布式模式下执行的操作与在真正的集群上运行几乎是一样的。
+
+#配置etc/hadoop/core-site.xml#
+
+    <configuration>
+      <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/home/ec2-user/data</value>
+      </property>
+      <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://localhost:9000</value>
+      </property>
+    </configuration>
+
+hadoop.tmp.dir用于配置HDFS的基础目录，如果不配置，默认是/tmp/hadoop-${user.name}。使用mkdir /home/ec2-user/data建立目录。
+
+fs.defaultFS配置默认的HDFS连接路径。
+
+配置说明：http://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/core-default.xml
+
+#配置etc/hadoop/hdfs-site.xml#
+
+    <configuration>
+      <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+      </property>
+    </configuration>
+
+dfs.replication用于设置DataNode中存储的数据块的副本数量，默认值是3。
+
+配置说明：http://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml
+
+#格式化HDFS#
+
+    bin/hdfs namenode -format
+
+#设置无密码登录#
+
+因为Hadoop需要在一台或多台主机的多个进程间通信，所以我们需要让使用Hadoop的用户不需要输入密码即可连接到所需的每台主机。这里通过创建一个空口令的Secure Shell密钥对来实现。
+
+在创建密钥对前，可以先检查当前是不是就已经可以不需要密码登录本机了，使用下面的命令：
+
+    ssh localhost
+
+如果报错，如Permission denied (publickey). 则需要使用下面的命令生成密钥对：
+
+    ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa
+    cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys
+    chmod 0600 ~/.ssh/authorized_keys
+
+#启动NameNode和DataNode的守护进程#
+
+    sbin/start-dfs.sh
+
+启动后的log都在logs目录下，也可以通过$HADOOP_LOG_DIR环境变量指定。
+
+可以通过浏览器查看NameNode信息：http://{IP}:50070 。
+
+#创建HDFS目录#
+
+    bin/hdfs dfs -mkdir /user
+
+#复制文件到HDFS#
+
+    bin/hdfs dfs -put etc/hadoop/ /user/input
+
+#查看HDFS中的文件#
+
+    bin/hdfs dfs -ls /user/input
+
+#在HDFS中执行刚才单机的示例#
+
+    bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.2.jar grep /user/input /user/output 'dfs[a-z.]+'
+
+可以通过bin/hdfs dfs -ls /user/output看到，结果被存储在HDFS中。通过下面的命令查看结果：
+
+    bin/hdfs dfs -get /user/output output
+    cat output/*
+
+#停止HDFS守护进程的命令#
+
+    sbin/stop-dfs.sh
+
