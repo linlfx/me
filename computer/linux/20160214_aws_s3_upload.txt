@@ -1,0 +1,8 @@
+1. 首先配置secret key
+
+aws configure
+
+2. 上传文件夹下所有内容到S3
+
+aws s3 cp folder/ s3://s3-bucket/folder --recursive
+
