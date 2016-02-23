@@ -1,0 +1,60 @@
+---
+layout: post
+title: "Hadoop(2)-基于Amazon S3的文件系统"
+date: 2016-02-23 14:37
+categories: ["大数据", "Hadoop", "S3"]
+---
+
+HDFS是Hadoop的分布式文件系统，但Hadoop除了HDFS，还支持其他文件系统，如基于Amazon S3存储的文件系统。
+
+使用hadoop fs操作S3
+-------------------------
+
+我们可以直接使用hadoop的命令操作一个S3的Bucket，步聚如下：
+
+<i>(使用hadoop-2.7.2，进入hadoop-2.7.2目录中。)</i>
+
+1. 首先在common/lib中添加hadoop-aws-2.7.2.jar和aws-java-sdk-1.7.4.jar这两个文件：
+
+    cp share/hadoop/tools/lib/hadoop-aws-2.7.2.jar share/hadoop/common/lib/
+    cp share/hadoop/tools/lib/aws-java-sdk-1.7.4.jar share/hadoop/common/lib/
+    cp share/hadoop/tools/lib/jackson-*.jar share/hadoop/common/lib/
+
+2. 使用类似下面的命令可操作S3：
+
+    bin/hadoop fs -ls s3a://{awsAccessKeyId}:{awsSecretAccessKey}@{bucketName}/
+    bin/hadoop fs -cat s3a://{awsAccessKeyId}:{awsSecretAccessKey}@{bucketName}/test.log
+
+URI scheme可以是s3n也可以是s3a，s3n有文件最大5G的限制，s3a是s3n的替代方案，做了优化，也没有5G的文件大小限制。
+
+在Hadoop的配置文件core-site.xml中，可以将AWS的信息配置进去，以简化命令：
+
+core-site.xml
+
+    <configuration>
+      <property>
+        <name>fs.s3a.access.key</name>
+        <value>{awsAccessKeyId}</value>
+      </property>
+      <property>
+        <name>fs.s3a.secret.key</name>
+        <value>{awsSecretAccessKey}</value>
+      </property>
+      <property>
+        <name>fs.defaultFS</name>
+        <value>s3a://{bucketName}</value>
+      </property>
+    </configuration>
+
+然后可直接使用类似下面的命令操作S3：
+
+    bin/hadoop fs -cat /
+    bin/hadoop fs -cat /test.log
+
+也可使用下面的命令从HDFS复制文件到S3：
+
+    bin/hadoop distcp hdfs://localhost:9000/test/test.log s3a://{bucketName}/
+
+在执行上述命令前，将配置文件core-site.xml中fs.defaultFS改为hdfs://localhost:9000后启动hdfs服务，并在hdfs中存入一个test/test.log文件。
+
+#S3只是一个资料存储，并不是文件系统，无法代替HDFS！#
