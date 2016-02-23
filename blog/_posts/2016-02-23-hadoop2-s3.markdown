@@ -51,3 +51,12 @@ core-site.xml
     bin/hadoop fs -cat /
     bin/hadoop fs -cat /test.log
 
+也可使用下面的命令从HDFS复制文件到S3：
+
+    bin/hadoop distcp hdfs://localhost:9000/test/test.log s3a://{bucketName}/
+
+在执行上述命令前，将配置文件core-site.xml中fs.defaultFS改为hdfs://localhost:9000后启动hdfs服务，并在hdfs中存入一个test/test.log文件。
+
+---
+
+#S3只是一个资料存储，并不是文件系统，无法代替HDFS！#
