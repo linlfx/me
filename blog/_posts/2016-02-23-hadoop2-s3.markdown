@@ -14,13 +14,13 @@ HDFS是Hadoop的分布式文件系统，但Hadoop除了HDFS，还支持其他文
 
 <i>(使用hadoop-2.7.2，进入hadoop-2.7.2目录中。)</i>
 
-1. 首先在common/lib中添加hadoop-aws-2.7.2.jar和aws-java-sdk-1.7.4.jar这两个文件：
+1.首先在common/lib中添加hadoop-aws-2.7.2.jar和aws-java-sdk-1.7.4.jar这两个文件：
 
     cp share/hadoop/tools/lib/hadoop-aws-2.7.2.jar share/hadoop/common/lib/
     cp share/hadoop/tools/lib/aws-java-sdk-1.7.4.jar share/hadoop/common/lib/
     cp share/hadoop/tools/lib/jackson-*.jar share/hadoop/common/lib/
 
-2. 使用类似下面的命令可操作S3：
+2.使用类似下面的命令可操作S3：
 
     bin/hadoop fs -ls s3a://{awsAccessKeyId}:{awsSecretAccessKey}@{bucketName}/
     bin/hadoop fs -cat s3a://{awsAccessKeyId}:{awsSecretAccessKey}@{bucketName}/test.log
@@ -56,5 +56,7 @@ core-site.xml
     bin/hadoop distcp hdfs://localhost:9000/test/test.log s3a://{bucketName}/
 
 在执行上述命令前，将配置文件core-site.xml中fs.defaultFS改为hdfs://localhost:9000后启动hdfs服务，并在hdfs中存入一个test/test.log文件。
+
+---
 
 #S3只是一个资料存储，并不是文件系统，无法代替HDFS！#
