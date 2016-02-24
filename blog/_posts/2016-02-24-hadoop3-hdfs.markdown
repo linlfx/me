@@ -9,8 +9,11 @@ categories: ["大数据", "Hadoop", "HDFS"]
 
 Hadoop使用2.7.2，解压到/home/ec2-user/download/hadoop-2.7.2，并创建一个软连接到/home/ec2-user/hadoop。
 
-1. 设定IP解析
+配置Master和Slave1
 --------------------------
+
+1.设定IP解析
+========================
 
 为了方便以后调整服务器IP，或将节点分配到其他服务器，这里添加主机和IP对应：
 
@@ -20,13 +23,13 @@ Hadoop使用2.7.2，解压到/home/ec2-user/download/hadoop-2.7.2，并创建一
     10.0.3.51   hadoop.slave1
     10.0.3.170  hadoop.slave2
 
-2. 设置无密码登录
----------------------------
+2.设置无密码登录
+========================
 
 按[入门示例](http://blog.gopersist.com/2016/01/29/hadoop/)中的方法设置无密码登录。
 
-3. 挂载EBS
----------------------------
+3.挂载EBS
+========================
 
 使用以下命令挂载EBS到/mnt/ebs，作为datanode存储数据的硬盘。
 
@@ -37,8 +40,8 @@ Hadoop使用2.7.2，解压到/home/ec2-user/download/hadoop-2.7.2，并创建一
     sudo sh -c 'echo "/dev/xvdb   /mnt/ebs   ext4   defaults,nofail 0  2" >> /etc/fstab'
 
 
-4. 修改配置文件
----------------------------
+4.修改配置文件
+=========================
 
 进入hadoop目录，在etc/hadoop/core-site.xml文件中添加以下内容：
 
@@ -76,25 +79,25 @@ Hadoop使用2.7.2，解压到/home/ec2-user/download/hadoop-2.7.2，并创建一
     hadoop.slave2
 
 配置Slave2
-====================
+---------------------
 
-1. 设定IP解析
--------------------
+1.设定IP解析
+======================
 
 同上
 
-2. 设置无密码登录
--------------------
+2.设置无密码登录
+======================
 
 将Master中.ssh/id_dsa.pub中的内容添加到Slave2的.ssh/authorized_keys中。
 
-3. 挂载EBS
--------------------
+3.挂载EBS
+======================
 
 同上
 
-4. 修改配置文件
---------------------
+4.修改配置文件
+======================
 
 将Master的配置文件全部复制到Slave2，替换掉Slave2中Hadoop的配置文件。
 
@@ -108,7 +111,7 @@ Hadoop使用2.7.2，解压到/home/ec2-user/download/hadoop-2.7.2，并创建一
     tar -zxvf etc.tar.gz
 
 启动HDFS
-=======================
+----------------------
 
 在Master服务器的Hadoop目录下，执行以下命令启动HDFS集群：
 
