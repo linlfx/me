@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ "$1" == "fuser" ]; then
+  umount ~/me/secret
+else
+  encfs ~/me/.secret ~/me/secret
+fi
