@@ -1,0 +1,47 @@
+1. 定制提示符：
+
+在~/.bash_profile添加下列内容：
+
+export PS1="\u@\h:\w $ "
+
+2. 彩色化ls输出结果：
+
+通过下面命令安装 coreutils
+
+brew install xz coreutils
+
+通过下面命令生成颜色定义文件
+
+gdircolors --print-database > ~/.dir_colors
+
+在~/.dir_colors中添加下列内容，补充代码相关的颜色
+
+# source code files
+.pl 00;33
+.PL 00;33
+.pm 00;33
+.tt 00;33
+.yml 00;33
+.sql 00;33
+.html 00;33
+.css 00;33
+.js 00;33
+.py 00;33
+.html 00;33
+
+在~/.bash_profile添加下列内容：
+
+if brew list | grep coreutils > /dev/null ; then
+        PATH="$(brew --prefix coreutils)/libexec/gnubin:$PATH"
+        alias ls='ls -F --show-control-chars --color=auto'
+        eval `gdircolors -b $HOME/.dir_colors`
+fi
+
+alias grep='grep --color'
+
+3. vim语法高亮
+
+在~/.vimrc中添加下面一句
+
+syntax on
+
