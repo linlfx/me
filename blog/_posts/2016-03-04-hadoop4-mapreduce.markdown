@@ -71,7 +71,7 @@ WordCount.java内容如下：
       }
     }
 
-在服务器上创建一个test.txt文件，内容为如下：
+在服务器上创建一个test.txt文件，内容为：
 
     This is a test.
 
