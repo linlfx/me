@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Hadoop(4)-MapReduce"
-date: 2016-03-04 15:35
+date: 2016-03-04 16:33
 categories: ["大数据", "Hadoop", "MapReduce"]
 ---
 
@@ -129,3 +129,48 @@ WordCount.java内容如下：
     }
 
 将刚才示例中的IntWritable换成CountWritable，打包到服务器执行，输出的结果和上一次相同。
+
+使用yarn执行MapReduce任务
+---------------------------
+
+修改配置文件
+======================
+
+修改hadoop/etc/hadoop/mapred-site.xml，使其configuration节点内容如下：
+
+    <configuration>
+        <property>
+            <name>mapreduce.framework.name</name>
+            <value>yarn</value>
+        </property>
+    </configuration>
+
+修改hadoop/etc/hadoop/yarn-site.xml，使其configuration节点内容如下：
+
+    <configuration>
+        <property>
+            <name>yarn.nodemanager.aux-services</name>
+            <value>mapreduce_shuffle</value>
+        </property>
+    </configuration>
+
+启动yarn
+=======================
+
+使用下面的命令启动yarn：
+
+    hadoop/sbin/start-yarn.sh
+
+浏览器访问yarn用户界面
+=======================
+
+默认端口为8088，如使用后面的地址访问：http://52.69.38.114:8088/
+
+提交MapReduce任务
+=======================
+
+使用之前的命令提交一个MapReduce任务，如：
+
+    hadoop/bin/hadoop jar hadoop-mapreduce-demo-0.0.1-SNAPSHOT.jar com.u3dspace.hadoop.mapreduce.demo.WordCount /mrtest/input /mrtest/output
+
+在浏览器的yarn界面下，可看到提交的任务及执行情况。
