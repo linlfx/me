@@ -130,6 +130,40 @@ WordCount.java内容如下：
 
 将刚才示例中的IntWritable换成CountWritable，打包到服务器执行，输出的结果和上一次相同。
 
+依赖第三方jar包
+---------------------------
+
+当需要使用第三方jar包时，简单的方法是在打包时将第三方jar包也打进去，Maven中配置一个plugin，如下：
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass></mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+然后使用mvn package打包后，在target/目录下会多一个以-jar-with-dependencies.jar为后缀的jar包，在服务器执行这个jar包即可。
+
 使用yarn执行MapReduce任务
 ---------------------------
 
