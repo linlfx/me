@@ -20,5 +20,7 @@ comments:
 paginate: 10
 paginate_path: "page:num"
 
+gems: [jekyll-paginate]
+
 # 代码高亮
-highlighter: pygments
+highlighter: rouge
