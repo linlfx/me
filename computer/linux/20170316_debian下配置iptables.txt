@@ -1,0 +1,67 @@
+切换到root用户下。
+
+1. 确认iptables是否安装：
+whereis iptables
+
+2. 安装iptables：
+apt-get install iptables
+
+3. 查看iptables规则：
+sudo iptables -L
+
+4. 创建一个iptables规则文件：
+vi iptables.example.rules
+
+以下是官方示例：
+
+```
+*filter
+
+# Allows all loopback (lo0) traffic and drop all traffic to 127/8 that doesn’t use lo0
+-A INPUT -i lo -j ACCEPT
+-A INPUT ! -i lo -d 127.0.0.0/8 -j REJECT
+
+# Accepts all established inbound connections
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Allows all outbound traffic
+# You could modify this to only allow certain traffic
+-A OUTPUT -j ACCEPT
+
+# Allows HTTP and HTTPS connections from anywhere (the normal ports for websites)
+-A INPUT -p tcp --dport 80 -j ACCEPT
+-A INPUT -p tcp --dport 443 -j ACCEPT
+
+# Allows SSH connections for script kiddies
+# THE -dport NUMBER IS THE SAME ONE YOU SET UP IN THE SSHD_CONFIG FILE
+-A INPUT -p tcp -m state --state NEW --dport 22 -j ACCEPT
+
+# Now you should read up on iptables rules and consider whether ssh access
+# for everyone is really desired. Most likely you will only allow access from certain IPs.
+# Allow ping
+-A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
+
+# log iptables denied calls (access via ‘dmesg’ command)
+-A INPUT -m limit --limit 5/min -j LOG --log-prefix "iptables denied: " --log-level 7
+
+# Reject all other inbound – default deny unless explicitly allowed policy:
+-A INPUT -j REJECT
+-A FORWARD -j REJECT
+
+COMMIT
+```
+
+5. 导入这个规则：
+iptables-restore < iptables.example.rules
+
+再查看
+iptables -L
+
+6. 保存当前配置，并设置开机时自动加载：
+iptables-save > /etc/iptables.up.rules
+vi /etc/network/if-pre-up.d/iptables
+```
+#!/bin/bash
+/sbin/iptables-restore < /etc/iptables.up.rules
+```
+chmod +x /etc/network/if-pre-up.d/iptables
