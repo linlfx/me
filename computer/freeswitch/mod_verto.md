@@ -15,74 +15,36 @@ Verto有一个Javascript包，用于在浏览器与服务器通过JSON通讯，�
 
 Verto实现许多功能，它的信令协议使web开发者从巨大的负担中解脱出来，一个简单的Javascript就可以使浏览器参与一个会议，可以准实时地显示会议参与者以及谁在讲话；主持人可以控制静音或踢出一个参与者。
 
-# verto.conf.xml
+# 配置
+
+mod_verto实现为一个FreeSWITCH的接入点，使用JSON-RPC的子集，并基于websocket。
+
+mod_verto是一个信令协议，它依赖mod_rtc用于媒体流服务。
+
+mod_verto是在1.5版加入的，目前在Master分支，你可以查看社区页面来参与开发和测试这个灵活的协议。
+
+# 证书
+
+WebRTC和WSS的主要设计目标是在安全连线下进行，这并不是事后添加的。为了使用WebRTC的实现必须安装适当的证书。
+
+# 会议
+
+为了开启livearray功能，来准实时地获取会议状态的事件，在conf/autoload_configs/conference.conf.xml中增加下面的设置：
 
 ```xml
-<configuration name="verto.conf" description="HTML5 Verto Endpoint">
-
-  <settings>
-    <param name="debug" value="0"/>
-    <!-- seconds to wait before hanging up a disconnected channel -->
-    <!-- <param name="detach-timeout-sec" value="120"/> -->
-    <!-- enable broadcasting all FreeSWITCH events in Verto -->
-    <!-- <param name="enable-fs-events" value="false"/> -->
-    <!-- enable broadcasting FreeSWITCH presence events in Verto -->
-    <!-- <param name="enable-presence" value="true"/> -->
-  </settings>
-
-  <profiles>
-    <profile name="default-v4">
-      <param name="bind-local" value="$${local_ip_v4}:8081"/>
-      <param name="bind-local" value="$${local_ip_v4}:8082" secure="true"/>
-      <param name="force-register-domain" value="$${domain}"/>
-      <param name="secure-combined" value="$${certs_dir}/wss.pem"/>
-      <param name="secure-chain" value="$${certs_dir}/wss.pem"/>
-      <param name="userauth" value="true"/>
-      <!-- setting this to true will allow anyone to register even with no account so use with care -->
-      <param name="blind-reg" value="false"/>
-      <param name="mcast-ip" value="224.1.1.1"/>
-      <param name="mcast-port" value="1337"/>
-      <param name="rtp-ip" value="$${local_ip_v4}"/>
-      <!--  <param name="ext-rtp-ip" value=""/> -->
-      <param name="ext-rtp-ip" value="180.173.155.172"/>
-      <param name="local-network" value="localnet.auto"/>
-      <param name="outbound-codec-string" value="opus,vp8"/>
-      <param name="inbound-codec-string" value="opus,vp8"/>
-
-      <param name="apply-candidate-acl" value="localnet.auto"/>
-      <param name="apply-candidate-acl" value="wan_v4.auto"/>
-      <param name="apply-candidate-acl" value="rfc1918.auto"/>
-      <param name="apply-candidate-acl" value="any_v4.auto"/>
-      <param name="timer-name" value="soft"/>
-
-    </profile>
-
-    <profile name="default-v6">
-      <param name="bind-local" value="[$${local_ip_v6}]:8081"/>
-      <param name="bind-local" value="[$${local_ip_v6}]:8082" secure="true"/>
-      <param name="force-register-domain" value="$${domain}"/>
-      <param name="secure-combined" value="$${certs_dir}/wss.pem"/>
-      <param name="secure-chain" value="$${certs_dir}/wss.pem"/>
-      <param name="userauth" value="true"/>
-      <!-- setting this to true will allow anyone to register even with no account so use with care -->
-      <param name="blind-reg" value="false"/>
-      <param name="rtp-ip" value="$${local_ip_v6}"/>
-      <!--  <param name="ext-rtp-ip" value=""/> -->
-      <param name="outbound-codec-string" value="opus,vp8"/>
-      <param name="inbound-codec-string" value="opus,vp8"/>
-
-      <param name="apply-candidate-acl" value="wan_v6.auto"/>
-      <param name="apply-candidate-acl" value="rfc1918.auto"/>
-      <param name="apply-candidate-acl" value="any_v6.auto"/>
-      <param name="apply-candidate-acl" value="wan_v4.auto"/>
-      <param name="apply-candidate-acl" value="any_v4.auto"/>
-      <param name="timer-name" value="soft"/>
-
-    </profile>
-  </profiles>
-</configuration>
-
+<param name="conference-flags" value="livearray-sync"/>
 ```
+
+这将开启一种事件来报告，比如允许一个页面显示谁正在会议中讲话。
+
+为了收到JSON格式的livearray，打开livearray-json-status：
+
+```xml
+<param name="conference-flags" value="livearray-sync|livearray-json-status"/>
+```
+
+
+
 
 
 
