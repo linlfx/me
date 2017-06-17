@@ -1,0 +1,15 @@
+查找当前目录及子目录下所有内容包含H264的文件：    
+find ./ -type f | xargs grep "H264"
+
+同上，查找时文件名有空格的情况：
+find ./ -type f -print0 | xargs -0 grep "H264"
+
+同上，但显示行号，同一文件递归查找：
+find ./ -type f -print0 | xargs -0 grep -rn "H264"
+
+查找当前目录及子目录下所有.log的文件中包含H264的文件：
+find ./ -name "*.log" -print0 | xargs -0 grep "H264"
+
+vi中替换：
+替换每一行的1015为3500：
+:%s/1015/3500/g
