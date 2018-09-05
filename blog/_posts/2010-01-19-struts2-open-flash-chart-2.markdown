@@ -18,6 +18,7 @@ categories: "报表开发"
 
 在web.xml中加入struts2拦截器
 
+```xml
     <?xml version="1.0" encoding="UTF-8"?>
     <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
       <display-name>OFC2Demo</display-name>
@@ -43,11 +44,13 @@ categories: "报表开发"
         <welcome-file>default.jsp</welcome-file>
       </welcome-file-list>
     </web-app>
+```
 
 在返回jofc2生成Open Flash Chart数据时，本来想用jsonplugin插件，但发现序列化jofc2的Chart对象时，许多元素名称和Chart.toString()不同，这使得Open Flash Chart解析数据时不认识。所以需增加一个Struts2自定义Result Type，步骤如下：
 
 新建类，OFC2Plugin
 
+```java
     package com.xy.strutsplugin;
 
     import java.io.IOException;
@@ -93,9 +96,11 @@ categories: "报表开发"
             }
         }
     }
+```
 
 在src下新建struts-plugin.xml
 
+```xml
     <?xml version="1.0" encoding="UTF-8" ?>
 
     <!DOCTYPE struts PUBLIC
@@ -109,6 +114,7 @@ categories: "报表开发"
             </result-types>
         </package>
     </struts>
+```
 
 配置log4j，以查看json输出信息。
 
@@ -140,6 +146,7 @@ log4j.properties
 
 在Action层增加类LineAction
 
+```java
     package com.xy.action;
 
     import java.text.DateFormat;
@@ -224,9 +231,11 @@ log4j.properties
             return SUCCESS;
         }
     }
+```
 
 增加struts配置文件
 
+```xml
     <?xml version="1.0" encoding="UTF-8"?>
     <!DOCTYPE struts PUBLIC
             "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
@@ -263,6 +272,7 @@ log4j.properties
         <div id="chart"></div>
     </body>
     </html>
+```
 
 这里用到了一点jquery的东西，请把jquery的包增加到相应目录下。
 
