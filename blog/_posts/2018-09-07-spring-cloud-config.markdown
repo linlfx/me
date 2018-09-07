@@ -1,13 +1,15 @@
 ---
 layout: post
 title: "Spring Cloud Config实践"
-date: 2018-09-09 11:50
+date: 2018-09-07 23:08
 categories: ["Spring", "Cloud", "Config"]
 ---
 
 我们使用Spring Cloud Config的动机除了通常所说的微服务数量太多，方便配置的统一管理外。另一个重要原因是，application.properties（或application.yml）中配置项太多，在不同环境(dev、alpha、beta、www）下配置时，调整并核对application.properties时常看得眼花缭乱，而许多配置项运维时并不关心。所以决定用Spring Cloud Config对配置管理过程做一次调整。
 
-这里包含了三个项目，用于大致演示Spring Cloud Config的配置方法。
+实验代码可从GitHub下载：https://github.com/gpleo/spring-cloud-config-demo
+
+包含了三个项目，用于大致演示Spring Cloud Config的配置方法。
 
 - spring-cloud-config-server：配置服务器。
 - blog-server：演示对称加密的配置方式。
@@ -68,37 +70,37 @@ http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.ht
 
 使用非对称加密对敏感数据进行加密时，比较繁琐，大致步骤如下：
 
-1. 使用下面的命令生成密钥对
+##### 1. 使用下面的命令生成密钥对
 
 ```
 ssh-keygen -t rsa -f ./config_rsa
 ```
 
-2. 创建证书请求
+##### 2. 创建证书请求
 
 ```
 openssl req -new -key config_rsa -out config_cert.csr
 ```
 
-3. 生成证书
+##### 3. 生成证书
 
 ```
 openssl x509 -req -days 3650 -in config_cert.csr -signkey config_rsa -out config_cert.crt
 ```
 
-4. 导出P12文件
+##### 4. 导出P12文件
 
 ```
 openssl pkcs12 -export -out config.p12 -inkey config_rsa -in config_cert.crt -name democonfig
 ```
 
-5. 使用JAVA的keytool将P12转为KeyStore文件
+##### 5. 使用JAVA的keytool将P12转为KeyStore文件
 
 ```
 keytool -importkeystore -deststorepass storepass -destkeypass keypass -destkeystore config.jks -srckeystore config.p12 -srcstoretype PKCS12 -srcstorepass abc123 -alias democonfig
 ```
 
-6. 将config.jks文件配置到Config Client中，配置方式如下：
+##### 6. 将config.jks文件配置到Config Client中，配置方式如下：
 
 ```
 encrypt:
