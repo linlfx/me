@@ -95,6 +95,20 @@ cat /etc/passwd | awk -F: '($3 == 0) { print $1 }'|grep -v '^root$'
 
 ___
 
+<b>密码输入错误5次后锁定帐号30分钟</b>
+===
+
+防止不停尝试密码。
+
+##### <b>加固：</b>
+
+在`/etc/pam.d/sshd`中第二行，即`#%PAM-1.0`下面增加以下内容：
+```
+auth       required     pam_tally2.so deny=5 unlock_time=1800 even_deny_root root_unlock_time=1800
+```
+
+___
+
 二、入侵防范
 ---
 
