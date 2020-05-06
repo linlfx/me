@@ -189,9 +189,9 @@ const Edit = ({ children, onOk, record }) => {
           <Form
             {...layout}
             form={form}
-            initialValues={{
+            initialValues={ {
               status: record.status || STATUS[0].key,
-            }}
+            } }
           >
             <Form.Item
               label="标题"
@@ -268,7 +268,7 @@ class List extends React.Component {
   }, {
     title: '操作',
     render: (text, record) => (
-      <div style={{ display: 'flex' }}>
+      <div style={ { display: 'flex' } }>
         <Edit record={record} onOk={this.editHandler.bind(this, record.id)}>
           <Button type="link">编辑</Button>
         </Edit>
@@ -302,7 +302,7 @@ class List extends React.Component {
     return (
       <div>
         <div>
-          <Edit record={{}} onOk={this.createHandler}>
+          <Edit record={ {} } onOk={this.createHandler}>
             <Button type="primary">创建</Button>
           </Edit>
         </div>
