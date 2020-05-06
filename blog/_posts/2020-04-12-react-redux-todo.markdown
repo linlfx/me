@@ -6,6 +6,7 @@ categories: ["Javascript", "React", "Redux"]
 ---
 
 一、Redux简介
+---
 
 推荐的开发模式是一个app只使用一个store，项目结构通常做如下划分：
 
